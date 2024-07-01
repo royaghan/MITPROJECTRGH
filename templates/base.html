@@ -1,0 +1,87 @@
+{% load static %}
+
+<html>
+   <head>
+        <meta charset="utf-8">
+        <meta http-equiv="content-security-policy">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title></title>
+        <link rel="stylesheet" href="{% static 'css/bulma.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style(2).css' %}">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+        <link rel="stylesheet" href="{% static 'css/bulma.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style(2).css' %}">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
+  <body>
+
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+ <a href="{% url 'index' %}" class="navbar-item">
+      <img src="{% static 'images/Untitled.png' %}" width="100" height="350">
+    </a>
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarBasicExample" class="navbar-menu">
+    <div class="navbar-start">
+      <a href="{% url 'index' %}" class="navbar-item">
+        <i class="material-icons">home</i>
+        Home
+      </a>
+
+
+
+      <a href="{% url 'show-notifications' %}" class="navbar-item">
+        <i class="material-icons">notifications</i>
+        Notifications
+        {% if count_notifications %}
+          <span class="badge">{{ count_notifications }}</span>
+        {% endif %}
+      </a>
+
+      <a href="{% url 'inbox' %}" class="navbar-item">
+        <i class="material-icons">inbox</i>
+        Inbox
+        {% if directs_count %}
+        <span class="badge">{{ directs_count }}</span>
+        {% endif %}
+      </a>
+
+      <a href="{% url 'profile' request.user %}" class="navbar-item">
+        <i class="material-icons">face</i>
+        Profile - <strong>{{ request.user }}</strong>
+      </a>
+
+      </div>
+    </div>
+
+</nav>
+
+      {% block banner %}
+      {% endblock %}
+
+  <section class="section">
+    <div class="container">
+
+      {% block content %}
+      {% endblock %}
+
+
+      {% block pagination %}
+      {% endblock %}
+
+    </div>
+  </section>
+  </body>
+
+ <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="{% static 'js/init.js' %}"></script>
+  <script src="{% static 'js/slider.js' %}"></script>
+</html>

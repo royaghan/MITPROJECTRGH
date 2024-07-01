@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<html lang="en">
+<style>
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.image {
+  width: 100px;
+  height: 100px;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+
+.box {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.secondary-content {
+  margin-left: auto;
+}
+
+.center-align {
+  text-align: center;
+  padding: 20px;
+}
+</style>
+
+{% for notification in notifications %}
+<div class="box div">
+  {% if notification.sender.profile.image %}
+    <img src="{{ notification.sender.profile.image.url }}" alt="Avatar" class="avatar">
+    {{ notification.get_notification_display }}
+        {% if post.image %}
+<!--    <img src="{{ request.scheme }}://{{ request.get_host }}{{ media }}{{ post.image }}">-->
+<!--       <img src="{{ media }}{{ post.image }}" class="image" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">-->
+
+<!--    <img src="{{ post.image }}" class="image">-->
+
+  {% else %}
+<!--    <img src="{% static 'img/no_avatar.jpg' %}" class="circle responsive-img">-->
+    &nbsp;<img src="{{ notification.post.image.url }}" class="image">
+
+ {% endif %}
+  {% if notification.post or notification.text_preview %}
+    <a href="{% if notification.id %}{% url 'delete-notification' notification.id %}{% endif %}" class="secondary-content">
+      <i class="material-icons">delete</i>
+    </a>
+  {% endif %}
+    {% endif %}
+  {% if notification.notification_type == 1 %}
+<!--         <p style="font-style: italic;"><b>Liked your post!</b></p>-->
+<!--        <a href="{% url 'post-details' post.id %}">See post</a>-->
+        <a href="{% url 'post-details' notification.post.id %}">See post</a>
+    {% if notification.post %}
+  <img src="{{ notification.post.image.url }}" class="image">
+{% endif %}
+    {% endif %}
+
+    {% if notification.notification_type == 2 %}
+<!--        <p style="font-style: italic;"><b>Commented on your post!</b></p>-->
+        <a href="{% url 'post-details' notification.post.id %}">See post</a>
+        {% if notification.post %}
+        <img src="{{ notification.post.image.url }}" class="image">
+        {% endif %}
+        {% endif %}
+        </div>
+{% empty %}
+    <div class="center-align">
+      <i class="material-icons large">inbox</i>
+      <h3>No notifications</h3>
+      <h5>Your inbox is empty</h5>
+    </div>
+
+  {% endfor %}
+{% endblock %}

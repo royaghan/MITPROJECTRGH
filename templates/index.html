@@ -1,0 +1,448 @@
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
+<html lang="en">
+<head>
+     <meta http-equiv="Content-Type" content="application/javascript; charset=utf-8">
+<!--     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://example.com; style-src 'self' https://example.net;">-->
+     <meta http-equiv="content-security-policy">
+     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+     <meta name="viewport" content="width=device-width, initial-scale=1">
+     <link href="{% static 'favicon.png' %}" rel="icon" type="image/png">
+     <link href="{{% static 'bootstrap.min.css' %}">
+     <title>Home</title>
+     <link rel="stylesheet" href="{% static 'css/home.css' %}">
+     <link rel="stylesheet" href="{% static 'assets/css/icons.css' %}">
+     <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
+     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+     <link rel="stylesheet" href="{% static 'assets/css/style(2).css' %}">
+     <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
+     <link rel="shortcut icon" href="assets/favicon.svg" type="image/x-icon">
+     <link rel="stylesheet" href="{% static 'css/bulma.min.css' %}">
+     <script type="text/javascript"> window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Font Awesome -->
+     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<!--    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>-->
+</head>
+<style>
+.notification-icon-red {
+color: red !important;
+}
+
+#btn.enabled {
+  background-color: greenyellow;
+}
+
+#btn.disabled {
+  background-color: #ff0000;
+}
+</style>
+
+<header>
+<br><br>
+    <div class="header_inner" style="margin-top:-40px">
+        <form action="/search" method="POST">
+            {% csrf_token %}
+            <div class="left-side">
+                <div id="logo" class=" uk-hidden@s">
+                        <b><h1 style="text-transform: uppercase;">Social Media</h1></b>
+                </div>
+
+                <!-- <div class="header_search"> -->
+                <input type="text" name="username" autocomplete="username" placeholder="Search for username..">
+                <button type="submit"><i class="fa fa-search fa-1x" style="color:Blue"></i></button>
+                <!-- </div> -->
+            </div>
+        </form>
+
+        <nav class="navbar" role="navigation" aria-label="main navigation" style="height:20px" >
+          <div class="navbar-brand" >
+
+            <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+                  </button>
+         </a>
+          </div>
+
+
+          <div id="navbarBasicExample" class="navbar-menu" >
+            <div class="navbar-start">
+              <a href="{% url 'index' %}" class="navbar-item">
+                <span><i class="material-icons">home</i></span>
+                Home
+              </a>
+
+
+                <span class="notification-icon">
+                    {% if notification_count > 0 %}
+                        {{ notification_count }}
+                        notification-icon-red
+                    {% endif %}
+                    </span>
+
+               <a href="{% url 'show-notifications' %}" class="navbar-item">
+                    <i class="material-icons">notifications</i>Notifications
+  <span id="notification-count">{{ notifications|length }}</span>
+</a>
+
+
+ <a href="{% url 'inbox' %}" class="navbar-item">
+        <i class="material-icons">inbox</i>
+        Inbox
+         {% if directs_count > 0 %}
+       <span style="color: red;">{{ directs_count }}</span>
+        {% endif %}
+      </a>
+
+
+            <a href="{% url 'profile' request.user %}" class="navbar-item">
+                <i class="material-icons">face</i>
+                Profile - <strong>{{ request.user }}</strong>
+              </a>
+
+
+    </div>
+
+  </div>
+
+</nav>
+        <div class="right-side md:pr-2">
+           &nbsp;Welcome&nbsp;<b name="" class="">{{user.username}}</b>
+            <!-- profile -->
+            <a href="#">
+                <img src="{{user_profile.image.url}}"  class="header-avatar" alt="">
+            </a>
+
+
+            <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
+                <ul>
+                    <li><a href="/settings"> Account setting </a> </li>
+                     <li><a href="upload"> UpLoad Post</a></li>
+
+                   <li class="nav-item">
+                    <a class="nav-link" href="/explore">
+                        <i class=""></i> Explore
+                    </a>
+                </li>
+                    <li><a href="logout"> Log Out</a></li>
+                </ul>
+            </div>
+
+ </div>
+ </div>
+</header>
+
+<body>
+
+<div class="container m-auto">
+    <div class="lg:flex justify-center lg:space-x-10 lg:space-y-0 space-y-5">
+
+        <!-- left sidebar-->
+        <div class="space-y-5 flex-shrink-0 lg:w-7/12">
+
+            <!-- post -->
+           {% for post in posts reversed %}
+            <div class="bg-white shadow rounded-md  -mx-2 lg:mx-0">
+
+                <!-- post header-->
+                <div class="flex justify-between items-center px-4 py-3">
+                    <div class="flex flex-1 items-center space-x-4">
+                        <span class="block font-semibold "><a href="/profile/{{post.user}}">@{{post.user}}</a></span>
+
+                    </div>
+
+
+<!--                    <div id="switchIndicator"></div>-->
+<!--  <button  id="switch" onclick="toggle()"><a href="{% url 'toggle_comments' post.id %}"  style="font-size:16px;"> <i class="uil-comment-slash mr-1"></i>-->
+<!--                   <i class="uil-comment mr-1"></i> On/OFF Switch</a></button><button id="btn"></button>-->
+
+
+
+     <a href="{% url 'toggle_comments' post.id %}" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md" style="font-size:16px;color:red"> <i class="uil-comment-slash mr-1"></i> Disable comments </a>
+                       <a href="{% url 're_enable_comments' post.id %}" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md" style="font-size:16px;color:green"> <i class="uil-comment mr-1"></i> Enable comments </a>
+
+
+
+
+                    <div>
+                </div>
+                </div>
+
+
+
+            <!--posts-->
+
+                <div uk-lightbox>
+                    <a href="{{post.image.url}}">
+                        <img src="{{post.image.url}}" style="width:600px; height:400px;" alt="">
+                    </a>
+
+                </div>
+
+                    <!--likes-->
+                <div class="py-3 px-4 space-y-3">
+                    <div class="flex space-x-4 lg:font-bold">
+<!--                        <a href="/like-post?post_id={{post.id}}" class="flex items-center space-x-2">-->
+                         <a href="/like-post?post_id={{post.id}}"><i class="material-icons has-text-danger">favorite</i></a>
+                                {% if post.no_of_likes == 0 %}
+                                <p>No likes</p>
+                                {% elif post.no_of_likes == 1 %}
+                                <p>Liked by {{post.no_of_likes}} person</p>
+                                {% else %}
+                                <p>Liked by {{post.no_of_likes}} people</p>
+                                {% endif %}
+                        <i class="material-icons">comment</i> {{ post.comments.count }} Comments
+                        <a href="{{post.image.url}}" class="flex items-center space-x-2 flex-1 justify-end" download>
+                            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="25"
+                                 height="25" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><g fill="currentColor"><path d="M8.5 1.5A1.5 1.5 0 0 1 10 0h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h6c-.314.418-.5.937-.5 1.5v6h-2a.5.5 0 0 0-.354.854l2.5 2.5a.5.5 0 0 0 .708 0l2.5-2.5A.5.5 0 0 0 10.5 7.5h-2v-6z"/></g></svg>
+
+                        </a>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="flex items-center">
+                            <img src="{% static 'assets/images/avatars/allan-lainez-9Zq8wpMZ7vo-unsplash.jpg' %}" alt="" class="w-6 h-6 rounded-full border-2 border-white ">
+                             <img src="{% static 'assets/images/avatars/dom-aguiar-x6S3Z0vZxj4-unsplash.jpg' %}" alt="" class="w-6 h-6 rounded-full border-2 border-white ">
+                             <img src="{% static 'assets/images/avatars/dwayne-joe-4AH1YjILFVE-unsplash.jpg' %}" alt="" class="w-6 h-6 rounded-full border-2 border-white ">
+                            <img src="{% static 'assets/images/avatars/tyler-nix-wztVvjBdVb8-unsplash.jpg' %}" alt="" class="w-6 h-6 rounded-full border-2 border-white ">
+
+
+                        </div>
+                        <div class="">
+                            Liked <strong> Ben </strong> and <strong> 3 Others </strong>
+                        </div>
+                    </div>
+
+                    <p>
+                        <strong>Title: </strong>{{ post.title }}&nbsp;&nbsp;&nbsp;&nbsp;<strong>Caption:</strong> {{ post.caption }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<!--      <p>{% for tag in post.tags.all %}<a href="{{ tag.get_absolute_url }}">#{{ tag }}</a>{% endfor %}</p>-->
+
+      <small>{{ post.created_at }}</small><br>
+                    </p>
+                    <hr/>
+ {% block content %}
+
+                        <!--Comment-->
+                            <div class="container mt-1">
+                                    <div class="d-flex justify-content-right row">
+                                        <div class="col-md-8 col-lg-8">
+                                            <div class="d-flex flex-column comment-section">
+                                               <form action="{%url 'post-details' post.id%}" method="POST">
+                                                    {% csrf_token %}
+                                                     {{ form.body }}
+                                                           <div class="bg-light p-2">
+                                                        <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="{{request.user.profile.image.url}}" width="30" height="30">{{form.body}}
+                                                            <input id="body"  name="body" value="{{ comment.body }}"></div>
+                                                        <div class="mt-2 text-right"><button class="btn btn-primary btn-sm shadow-none" type="submit">Post comment</button></div>
+                                                    </div>
+                                                </form>
+                                              {% for comment in post.comments.all %}
+                                                 {% if comment.is_parent %}
+
+                                                    <div class="bg-blue p-2">
+                                                        <div class="d-flex flex-row user-info"> <img src="{{comment.user.profile.image.url}}" class="bg-gray-200 rounded-full w-10 h-10" alt="">
+
+                                                          <a href="{% url 'profile' comment.user %}" style="text-decoration: none;">
+
+                                                            <div class="d-flex flex-column justify-content-start ml-2">
+                                                                <strong><span class="d-block font-weight-bold name">@{{comment.user}}</span></strong>
+                                                                <span class="date text-black-50"> <strong>{{ comment.created_at }}</strong></span></div></a>
+
+                                                        </div>
+                                                        <div class="mt-2">
+
+                                                            <p class="comment-text">{{ comment.body }}&nbsp;&nbsp;
+
+                                                             {% if request.user == comment.user %}
+                                                            <a href="{% url 'comment-delete' post.id comment.pk %}" class="edit-color"><i class="fas fa-trash"></i></a>
+                                                            {% endif %}
+                                                            </p>
+                                                             <div class="d-flex flex-row">
+                                                            <form method="POST" action="{% url 'comment-like' post.id comment.pk %}">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="next" value="{{ request.path }}">
+                                                                <button class="remove-default-btn" type="submit">
+                                                                    <i class="far fa-thumbs-up" style='font-size:20px;color:Green'> <span>{{ comment.likes.all.count }}</span></i>
+                                                                </button>
+                                                            </form>&nbsp;&nbsp;
+
+                                                            <form method="POST" action="{% url 'comment-dislike' post.id comment.pk %}">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="next" value="{{ request.path }}">
+                                                                <button class="remove-default-btn" type="submit">
+                                                                    <i class="far fa-thumbs-down"  style='font-size:20px;color:red'> <span>{{ comment.dislikes.all.count }}</span></i>
+                                                                </button>
+                                                            </form>&nbsp;&nbsp;
+                                                        <div>
+                                                            <button class="remove-default-btn"><i class="far fa-comment-dots" style='font-size:20px; color:black' onclick="commentReplyToggle('{{ comment.pk }}')"></i></button>
+                                                        </div>
+                                                       </div>
+                                                        </div>
+                                                    </div>
+
+                                             <div class="row justify-content-center mt-3 mb-5 d-none" id="{{ comment.pk }}">
+                                                <div class="col-md-5 col-sm-12">
+                                                    <form method="POST" action="{% url 'comment-reply' post.id comment.pk %}">
+                                                        {% csrf_token %}
+                                                         {{ form.body }}
+                                                            <div class="bg-light p-2">
+                                                            <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="{{request.user.profile.image.url}}" width="30" height="30">{{form.body}}
+                                                            <input id="body"  name="body" ></div>
+                                                        <div class="mt-2 text-right"><button class="btn btn-primary btn-sm shadow-none" type="submit">Post comment</button></div>
+                                                    </div>
+                                            </form>
+                                         </div>
+                                             </div>
+                                                {% for child_comment in comment.children %}
+
+                                        <div class="row justify-content-center mt-3 mb-5 child-comment">
+                                            <div class="col-md-5 col-sm-12 border-bottom">
+<!--            <p>-->
+                <div>
+                    <a href="{% url 'profile' child_comment.user %}">
+                        <img class="bg-gray-200 rounded-full w-10 h-10" src="{{ child_comment.user.profile.image.url }}" />
+                    </a>
+                    <p class="post-text">
+                        <a class="text-primary post-link" href="{% url 'profile' child_comment.user %}">@{{ child_comment.user }}</a>&nbsp;<strong><small>{{ child_comment.created_at }}</small></strong>
+                    </p>
+                     {{ child_comment.body }}
+                </div>
+                {% if request.user == child_comment.user %}
+                    <a href="{% url 'comment-delete' post.id child_comment.pk %}" class="edit-color"><i class="fas fa-trash"></i></a>
+                {% endif %}
+<!--            </p>-->
+            <p>{{ child_comment.comment }}</p>
+        </div>
+    </div>
+    {% endfor %}
+
+                                            {% endif %}
+                                                {% endfor %}
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                    {% endblock %}
+
+                            </div>
+                        </div>
+
+             {% endfor %}
+
+                    </div>
+
+                    <!-- right sidebar (Suggestion)-->
+                    <div class="lg:w-5/12">
+                        <div class="bg-white  shadow-md rounded-md overflow-hidden">
+                            <div class="bg-gray-50  border-b border-gray-100 flex items-baseline justify-between py-4 px-6 ">
+                                <h2 class="font-semibold text-lg">Users You Can Follow</h2>
+                            </div>
+                            <div class="divide-gray-300 divide-gray-50 divide-opacity-50 divide-y px-4 ">
+                                {% for suggestion in suggestions_username_profile_list %}
+                                <div class="flex items-center justify-between py-3">
+                                    <div class="flex flex-1 items-center space-x-4">
+                                        <a href="/profile/{{suggestion.user}}">
+                                            <img src="{{suggestion.image.url}}" class="bg-gray-200 rounded-full w-10 h-10">
+                                        </a>
+                                        <div class="flex flex-col">
+                                            <span class="block capitalize font-semibold"> {{suggestion.user}} </span>
+                                            <span class="block capitalize text-sm"> {{suggestion.bio}} </span>
+                                        </div>
+                                    </div>
+                                    <a href="/profile/{{suggestion.user}}" class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600 "> View User </a>
+                                </div>
+
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+ </div>
+
+
+            <!-- Scripts -->
+
+            <script type="text/javascript"> window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+            <script src="{% static 'assets/js/tippy.all.min.js' %}"></script>
+            <script src="{% static 'assets/js/jquery-3.3.1.min.js' %}"></script>
+            <script src="{% static 'assets/js/uikit.js' %}"></script>
+            <script src="{% static 'assets/js/simplebar.js' %}"></script>
+            <script src="{% static 'assets/js/custom.js' %}"></script>
+            <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+            <script src="{% static 'js/init.js' %}"></script>
+            <script src="{% static 'js/slider.js' %}"></script>
+            <script type="text/javascript" src="{% static 'js/social.js' %}"></script>
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.0.6/dist/js/splide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+
+<script>
+fetch('/notifications/count/')
+  .then(response => response.json())
+  .then(data => {
+    const notificationCount = document.getElementById('notification-count');
+    notificationCount.innerText = data.count;
+    if (data.count > 0) {
+      notificationCount.classList.add('notification-icon-red');
+    }
+  });
+
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+window.enabled = false;
+window.count = 1;
+
+// Initialize the view (for demo)
+$(function() {
+  $('#switchIndicator').html(`<p>${enabled ? 'Switch is ON' : 'Switch is OFF'}</p>`);
+  $('#btn').html(enabled ? 'Comment Enabled' : 'Comment Disabled');
+});
+
+// Toggle click functionality using jQuery's .on() & .off() methods
+function toggle() {
+
+  enabled = !enabled;
+
+  if (enabled) {
+      // Line of interest #1: jQuery .on()
+      $('#btn').on('click', handleClick);
+  } else {
+      // Line of interest #2: jQuery .off()
+      $('#btn').off('click', handleClick);
+  }
+
+  $('#switchIndicator').html(`<p>${enabled ? 'Switch is ON' : 'Switch is OFF'}</p>`);
+  $('#btn').html(enabled ? 'Comment Enabled' : 'Comment Disabled');
+  $('#btn').removeClass(enabled ? 'disabled' : 'enabled').addClass(enabled ? 'enabled' : 'disabled');
+}
+
+function handleClick() {
+  $('#counter').append(` ${count++}`);
+}
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>
+<br>

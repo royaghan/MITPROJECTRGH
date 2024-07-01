@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<section id="edit-post">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mt-3 offset-md-2">
+                <h3>Edit Post</h3>
+                <p>Please use form in desktop mode</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 mt-3 offset-md-2">
+              <form method="POST" action="{% url 'post-update' post.id %}" class="form mb-2"
+                    enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    {% if field.name != 'image' %}
+                    {{ field | as_crispy_field }}
+                    {% else %}
+                    <img src="{{ post.image.url }}" width="300" height="100" alt="Image">
+                    {% endif %}
+                    {% endfor %}
+                    <div class="text-right mt-4">
+                    <a class="btn btn-signup" href="{% if pk %}{% url 'profile' id=pk %}{% else %}#{% endif %}">Cancel</a>
+                        <button class="btn btn-signup" type="submit">Update Post &raquo;</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block postloadjs %}
+{{ block.super }}
+<script>
+    $('#new-image').change(function () {
+        var file = $('#new-image')[0].files[0];
+        $('#filename').text(`Image will be set to: ${file.name}`);
+    });
+</script>
+{% endblock %}

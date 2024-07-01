@@ -1,0 +1,228 @@
+.badge {
+	position: absolute;
+	top: 1px;
+	right: -4px;
+	padding: 1px 7px;
+	border-radius: 50%;
+	background: red;
+	color: white;
+	font-weight: bold;
+}
+
+
+* {box-sizing:border-box}
+
+/* Slideshow container */
+.slideshow-container {
+  max-width: 1000px;
+  position: relative;
+  margin: auto;
+}
+
+/* Hide the images by default */
+.mySlides {
+  display: none;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  margin-top: -22px;
+  padding: 16px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.8);
+}
+
+/* Caption text */
+.text {
+  color: #f2f2f2;
+  font-size: 15px;
+  padding: 8px 12px;
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Number text (1/3 etc) */
+.numbertext {
+  color: #f2f2f2;
+  font-size: 12px;
+  padding: 8px 12px;
+  position: absolute;
+  top: 0;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+  background-color: #717171;
+}
+
+/* Fading animation */
+.fade {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1.5s;
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+
+@keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+
+.chat-container {
+  width: 800px;
+  border-color: #ccc;
+   background-color: #ddd;
+}
+.chat-item-container {
+  background-color: pink;
+}
+.chat-item-container.chat-item-right {
+  background-color: tomato;
+  margin: 10px 0;
+  max-width: 800px;
+
+}
+.chat-item-container.chat-item-right .chat-item {
+  background-color: tomato;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+  max-width: 800px;
+  padding: 0 20px;
+
+}
+
+.chat-item {
+  padding: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top:0px;
+  color: #FFF;
+  position: relative;
+  border-radius: 10px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+  box-shadow: 0 8px 6px -6px black;
+  text-align: right;
+  max-width: 800px;
+}
+
+.speech-wrapper{
+  padding: 5px 6px;
+
+  }
+
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+    max-height: 800px;
+    overflow-y: scroll
+
+}
+
+.chat-message-left,
+.chat-message-right {
+    display: flex;
+    flex-shrink: 0
+}
+
+.chat-message-left {
+    flex-direction: row-reverse;
+    margin-right: auto;
+    align-items: left;
+}
+
+.chat-message-right {
+    flex-direction: row-reverse;
+    margin-left: auto;
+    align-items: right;
+}
+.py-3 {
+    padding-top: 1rem!important;
+    padding-bottom: 1rem!important;
+}
+.px-4 {
+    padding-right: 1.5rem!important;
+    padding-left: 1.5rem!important;
+}
+.flex-grow-0 {
+    flex-grow: 0!important;
+}
+.border-top {
+    border-top: 1px solid #dee2e6!important;
+}
+
+ .img {
+    width: 58px;
+    height: 85px;
+    border: 3px rgb(48, 69, 96) solid;
+    border-radius: 6px;
+    position: relative;
+    background-image: url('https://www.rd.com/wp-content/uploads/2017/09/01-shutterstock_476340928-Irina-Bg.jpg');
+    background-size: cover;
+    background-position: center;
+
+    .status {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgb(48, 69, 96);
+    border-radius: 50%;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    transform: translate(40%, -40%);
+    background-color: rgb(33, 34, 35);
+}
+.active {
+    background-color: rgb(48, 249, 75);
+}
+.chat-online {
+    color: #34ce57
+}
+.chat-offline {
+    color: #e4606d
+}
+
+body {
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 0 20px;
+}

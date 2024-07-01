@@ -1,0 +1,144 @@
+{% load static %}
+
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+	<title>Profile - {{user_profile.user.username}}</title>
+    <link rel="stylesheet" href="{% static 'css/main.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/color.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+	   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/cb792c0850.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+</head>
+<body>
+<!--<div class=gray-bg">-->
+<!--	</div>-->
+
+
+	<section class=" gray-bg">
+			<div class="feature-photo" >
+				<figure><img src="{% static 'images/resources/pexels-jmueller-6444367.jpg'%}" alt="" style="height:300px; width:100%;"></figure>
+				<form action="/follow" method="POST">
+					{% csrf_token %}
+					<div class="add-btn">
+					<span style="color: white; font-size: 27px; margin-right: 100px;"><b><u><a href="/">Home</a></u></b></span>
+
+					{% if user_post_length == 0 %}
+					<span style="color: white; font-size: 27px;"><b>No Post</b></span>
+					{% elif user_post_length == 1 %}
+					<span style="color: white; font-size: 27px;"><b>{{user_post_length}} Post</b></span>
+					{% else %}
+					<span style="color: white; font-size: 27px;"><b>{{user_post_length}} Posts</b></span>
+					{% endif %}
+					{% if user_followers == 0 or user_followers == 1 %}
+					<span style="color: white; font-size: 27px;"><b>{{user_followers}} follower</b></span>
+					{% else %}
+					<span style="color: white; font-size: 27px;"><b>{{user_followers}} followers</b></span>
+					{% endif %}
+					<span style="color: white; font-size: 27px;"><b>{{user_following}} following</b></span>
+					<input type="hidden" value="{{user.username}}" name="follower" />
+					<input type="hidden" value="{{user_object.username}}" name="user" />
+					{% if user_object.username == user.username %}
+					<a href="/settings" data-ripple="">Account Settings</a>
+					{% else %}
+					<a data-ripple=""><button type="submit" style="background-color: #ffc0cb; border: #ffc0cb;">{{button_text}}</button></a>
+					{% endif %}
+					</div>
+				</form>
+				<div class="container-fluid">
+					<div class="row merged">
+						<div class="col-lg-2 col-sm-3">
+							<div class="user-avatar">
+								<figure>
+									<img src="{{user_profile.image.url}}" style="height:200px; width:100%;" alt="">
+
+								</figure>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</section><!-- top area -->
+		<section class=" gray-bg">
+			<div class="bio">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				{{user_profile.bio}}
+			</div>
+		</section>
+
+	<section>
+		<div class="gap gray-bg">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="row" id="page-contents">
+							<div class="col-lg-3">
+								<aside class="sidebar static">
+								</aside>
+							</div>
+<!--							 sidebar-->
+							<div class="col-lg-7">
+								<div class="central-meta">
+									<ul class="photos">
+
+										{% for post in user_posts %}
+										<li>
+											{{post.title}}
+											<a class="strip" href="{{post.image.url}}" title="" data-strip-group="mygroup" data-strip-group-options="loop: false">
+												<img src="{{post.image.url}}" style="height:200px; width:300px;" alt=""></a>
+											{{post.caption}}
+											<div class="p-2 rounded-full text-black">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="25" height="25" class="">
+                                    <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                                </svg>
+												{% if post.no_of_likes == 0 %}
+												<p>No likes</p>
+												{% elif post.no_of_likes == 1 %}
+												<p>Liked by {{post.no_of_likes}} person</p>
+												{% else %}
+												<p>Liked by {{post.no_of_likes}} people</p>
+												{% endif %}
+											</div>
+
+ 								{% if user == user_profile.user %} <a href="{% url 'post-delete' post.id %}"><i class="fa-solid fa-trash"></i></a>
+											<a href="{% url 'post-update' post.id %}">Edit</a>
+                                                    {% endif %}
+										</li>
+										{% endfor %}
+									</ul>
+									<div class="lode more"><button class="btn-view btn-load-more"></button></div>
+								</div>
+								<!-- photos -->
+							</div>
+<!--							 central meta -->
+							<div class="col-lg-3">
+								<aside class="sidebar static">
+								</aside>
+							</div>
+							<!-- sidebar -->
+						</div>	
+					</div>
+				</div>
+			</div>
+		</div>
+<br>
+	</section>
+	<script data-cfasync="false" src="{% static '../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js' %}"></script><script src="{% static 'js/main.min.js' %}"></script>
+	<script src="{% static 'js/script.js' %}"></script>
+	<script src="{% static 'js/app.js'%}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>
+<br>
